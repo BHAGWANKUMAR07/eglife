@@ -2,84 +2,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>EGLIFE - Empowering Everyday Life</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: linear-gradient(to bottom right, #00b894, #0984e3);
-            color: white;
-            text-align: center;
-        }
-        header {
-            padding: 40px 20px;
-        }
-        .token-info, .airdrop {
-            background: rgba(255, 255, 255, 0.1);
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 12px;
-            max-width: 600px;
-        }
-        .connect-btn {
-            background: white;
-            color: #0984e3;
-            padding: 10px 20px;
-            font-size: 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .connect-btn:hover {
-            background: #dfe6e9;
-        }
-        footer {
-            margin-top: 30px;
-            font-size: 14px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>EGLIFE - Empowering Everyday Life</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(to bottom right, #00b894, #0984e3);
+      color: white;
+      text-align: center;
+    }
+    header {
+      padding: 40px 20px;
+    }
+    .token-info, .airdrop {
+      background: rgba(255, 255, 255, 0.1);
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+    }
+    .connect-btn {
+      background: white;
+      color: #0984e3;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .connect-btn:hover {
+      background: #dfe6e9;
+    }
+    footer {
+      margin-top: 30px;
+      font-size: 14px;
+    }
+    #wallet-address {
+      margin-top: 10px;
+      font-size: 14px;
+      word-break: break-all;
+    }
+    #referral {
+      margin-top: 10px;
+      font-size: 14px;
+      background: #fff;
+      color: #0984e3;
+      padding: 8px;
+      border-radius: 8px;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>EGLIFE</h1>
-        <p>Empowering Everyday Life with Crypto Utilities</p>
-        <button class="connect-btn" onclick="connectWallet()">Connect Wallet</button>
-    </header>
+  <header>
+    <h1>EGLIFE</h1>
+    <p>Empowering Everyday Life with Crypto Utilities</p>
+    <button class="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+    <div id="wallet-address"></div>
+    <div id="referral"></div>
+  </header>
 
-    <div class="token-info">
-        <h2>Token Information</h2>
-        <p>Name: EGLIFE</p>
-        <p>Symbol: EGL</p>
-        <p>Total Supply: 1,000,000,000</p>
-        <p>Blockchain: Binance Smart Chain (BEP-20)</p>
-    </div>
+  <div class="token-info">
+    <h2>Token Information</h2>
+    <p>Name: EGLIFE</p>
+    <p>Symbol: EGL</p>
+    <p>Total Supply: 1,000,000,000</p>
+    <p>Blockchain: Binance Smart Chain (BEP-20)</p>
+  </div>
 
-    <div class="airdrop">
-        <h2>Airdrop Program</h2>
-        <p>Join our airdrop and earn free EGL tokens!</p>
-        <p><strong>10% Referral Bonus</strong> for every friend you invite.</p>
-        <button class="connect-btn" onclick="alert('Airdrop Claimed (Simulation)')">Claim Airdrop</button>
-    </div>
+  <div class="airdrop">
+    <h2>Airdrop Program</h2>
+    <p>Join our airdrop and earn free EGL tokens!</p>
+    <p><strong>10% Referral Bonus</strong> for every friend you invite.</p>
+    <button class="connect-btn" onclick="alert('Airdrop Claimed (Simulation)')">Claim Airdrop</button>
+  </div>
 
-    <footer>
-        <p>Contact: eglife2@gmail.com | www.eglife.io</p>
-    </footer>
+  <footer>
+    <p>Contact: eglife2@gmail.com | www.eglife.io</p>
+  </footer>
 
-    <script>
-        async function connectWallet() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    alert('Wallet connected!');
-                } catch (error) {
-                    alert('Connection failed!');
-                }
-            } else {
-                alert('Please install MetaMask!');
-            }
+  <script>
+    async function connectWallet() {
+      if (typeof window.ethereum !== "undefined") {
+        try {
+          const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+          const wallet = accounts[0];
+          document.getElementById("wallet-address").innerText = "Wallet: " + wallet;
+          const referralLink = window.location.origin + window.location.pathname + "?ref=" + wallet;
+          document.getElementById("referral").innerText = "Your Referral Link: " + referralLink;
+        } catch (error) {
+          alert("Connection failed!");
         }
-    </script>
+      } else {
+        alert("Please install MetaMask!");
+      }
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get("ref");
+    if (ref) {
+      const refDiv = document.createElement("div");
+      refDiv.style.marginTop = "10px";
+      refDiv.innerHTML = "<strong>Referred By:</strong> " + ref;
+      document.querySelector("header").appendChild(refDiv);
+    }
+  </script>
 </body>
 </html>
