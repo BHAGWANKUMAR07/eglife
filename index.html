@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EGLIFE - Empowering Everyday Life</title>
+  <title>EGLIFE Staking Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -12,94 +12,65 @@
       background: linear-gradient(to bottom right, #00b894, #0984e3);
       color: white;
       text-align: center;
+      padding: 20px;
     }
-    header {
-      padding: 40px 20px;
-    }
-    .token-info, .airdrop {
+    .container {
       background: rgba(255, 255, 255, 0.1);
-      margin: 20px auto;
       padding: 20px;
       border-radius: 12px;
       max-width: 600px;
+      margin: auto;
     }
-    .connect-btn {
-      background: white;
-      color: #0984e3;
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
       padding: 10px 20px;
       font-size: 18px;
       border: none;
       border-radius: 8px;
+      background: white;
+      color: #0984e3;
       cursor: pointer;
+      margin: 10px;
     }
-    .connect-btn:hover {
+    button:hover {
       background: #dfe6e9;
     }
-    footer {
-      margin-top: 30px;
-      font-size: 14px;
-    }
-    #wallet-address {
+    #wallet {
       margin-top: 10px;
-      font-size: 14px;
       word-break: break-word;
-    }
-    #referral, #referrer-note {
-      margin-top: 10px;
-      font-size: 14px;
-      background: #fff;
-      color: #0984e3;
-      padding: 8px;
-      border-radius: 8px;
-      max-width: 90%;
-      margin-left: auto;
-      margin-right: auto;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>EGLIFE</h1>
-    <p>Empowering Everyday Life with Crypto Utilities</p>
-    <button class="connect-btn" onclick="connectWallet()">Connect Wallet</button>
-    <div id="wallet-address"></div>
-    <div id="referral"></div>
-    <div id="referrer-note"></div>
-  </header>
-
-  <div class="token-info">
-    <h2>Token Information</h2>
-    <p>Name: EGLIFE</p>
-    <p>Symbol: EGL</p>
-    <p>Total Supply: 1,000,000,000</p>
-    <p>Blockchain: Binance Smart Chain (BEP-20)</p>
+  <h1>EGLIFE Token Staking</h1>
+  <div id="wallet">Connect your wallet to begin</div>
+  <button onclick="connectWallet()">Connect Wallet</button>
+  <div class="container">
+    <h2>Stake Your EGL Tokens</h2>
+    <input type="number" id="stakeAmount" placeholder="Enter amount to stake (EGL)" />
+    <div id="result"></div>
+    <button onclick="calculateReward()">Calculate Reward</button>
+    <button onclick="stakeTokens()">Stake Now</button>
+    <button onclick="withdrawStake()">Withdraw</button>
   </div>
-
-  <div class="airdrop">
-    <h2>Airdrop Program</h2>
-    <p>Join our airdrop and earn free EGL tokens!</p>
-    <p><strong>10% Referral Bonus</strong> for every friend you invite.</p>
-    <button class="connect-btn" onclick="claimAirdrop()">Claim EGLIFE Airdrop</button>
-  </div>
-
-  <footer>
-    <p>Contact: eglife2@gmail.com | www.eglife.io</p>
-  </footer>
 
   <script>
-    let userWallet = "";
-    let referrerWallet = "";
-    let claimed = false;
+    let walletAddress = "";
 
     async function connectWallet() {
       if (typeof window.ethereum !== "undefined") {
         try {
           const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-          userWallet = accounts[0];
-          document.getElementById("wallet-address").innerText = "Wallet: " + userWallet;
-          const referralLink = window.location.origin + window.location.pathname + "?ref=" + userWallet;
-          document.getElementById("referral").innerText = "Your Referral Link: " + referralLink;
-        } catch (error) {
+          walletAddress = accounts[0];
+          document.getElementById("wallet").innerText = "Wallet Connected: " + walletAddress;
+        } catch (err) {
           alert("Connection failed!");
         }
       } else {
@@ -107,25 +78,31 @@
       }
     }
 
-    function claimAirdrop() {
-      if (!userWallet) {
-        alert("Please connect your wallet first.");
-        return;
+    function calculateReward() {
+      const amount = parseFloat(document.getElementById("stakeAmount").value);
+      let reward = 0;
+      let multiplier = 1;
+
+      if (amount >= 10000 && amount <= 59000) {
+        multiplier = 2;
+      } else if (amount >= 60000 && amount <= 290000) {
+        multiplier = 2.5;
+      } else if (amount >= 300000 && amount <= 5000000) {
+        multiplier = 3;
       }
-      if (claimed) {
-        alert("Airdrop already claimed!");
-        return;
-      }
-      claimed = true;
-      const ref = new URLSearchParams(window.location.search).get("ref");
-      referrerWallet = ref ? ref : "None";
-      document.getElementById("referrer-note").innerText = "Referral credited to: " + referrerWallet;
-      alert("Airdrop claimed successfully!");
+
+      reward = amount * multiplier;
+
+      document.getElementById("result").innerText =
+        "You will receive " + reward + " EGL tokens after 12 months (" + multiplier + "x)";
     }
 
-    const refParam = new URLSearchParams(window.location.search).get("ref");
-    if (refParam) {
-      document.getElementById("referrer-note").innerHTML = "<strong>You were referred by:</strong> " + refParam;
+    function stakeTokens() {
+      alert("Staking simulated! Your EGL tokens are staked.");
+    }
+
+    function withdrawStake() {
+      alert("Withdrawal simulated! Your EGL tokens are returned.");
     }
   </script>
 </body>
